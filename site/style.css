@@ -1,0 +1,485 @@
+/* ============================================
+   PublicWerx — Swiss editorial, electric blue
+   ============================================ */
+
+:root {
+  --blue: #0055ff;
+  --blue-light: #e8f0ff;
+  --black: #0a0a0a;
+  --gray-900: #1a1a1a;
+  --gray-700: #444;
+  --gray-500: #777;
+  --gray-300: #ccc;
+  --gray-100: #f5f5f5;
+  --white: #fff;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+  --max-width: 1120px;
+}
+
+/* Reset */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--gray-900);
+  background: var(--white);
+}
+
+/* Container */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Typography */
+h1, h2, h3 {
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+}
+
+h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: var(--gray-700);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--gray-100);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+
+ol {
+  padding-left: 1.5rem;
+}
+
+ol li {
+  margin-bottom: 0.75rem;
+  color: var(--gray-700);
+}
+
+/* ---- Header ---- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--black);
+}
+
+nav {
+  display: flex;
+  gap: 1.75rem;
+}
+
+nav a {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gray-500);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+nav a:hover {
+  color: var(--black);
+  text-decoration: none;
+}
+
+/* ---- Hero ---- */
+.hero {
+  padding: 8rem 0 6rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.hero h1 {
+  margin-bottom: 1.5rem;
+  max-width: 720px;
+}
+
+.subtitle {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--gray-500);
+  max-width: 620px;
+}
+
+/* ---- Two-column layout ---- */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* ---- Problem ---- */
+.problem {
+  padding: 6rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+/* ---- Constitution ---- */
+.constitution {
+  padding: 6rem 0;
+  background: var(--gray-100);
+}
+
+.section-intro {
+  font-size: 1.05rem;
+  color: var(--gray-500);
+  max-width: 600px;
+  margin-bottom: 3rem;
+}
+
+.tenets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+}
+
+.tenet {
+  padding: 2rem;
+  background: var(--white);
+  border-radius: 6px;
+}
+
+.tenet-number {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 0.75rem;
+  font-family: var(--font-mono);
+}
+
+.tenet h3 {
+  color: var(--black);
+}
+
+.tenet p {
+  font-size: 0.95rem;
+}
+
+/* ---- Zurich ---- */
+.zurich {
+  padding: 6rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.zurich .two-col {
+  margin-bottom: 3rem;
+}
+
+.zurich-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.pillar {
+  padding: 2rem;
+  border-top: 3px solid var(--blue);
+}
+
+.pillar h3 {
+  font-size: 1.05rem;
+  margin-bottom: 0.75rem;
+  color: var(--black);
+}
+
+.pillar p {
+  font-size: 0.95rem;
+}
+
+.zurich-closing {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--black);
+  max-width: 600px;
+}
+
+/* ---- Payments ---- */
+.payments {
+  padding: 6rem 0;
+  background: var(--gray-900);
+  color: var(--white);
+}
+
+.payments h2 {
+  color: var(--white);
+}
+
+.payments .section-intro {
+  color: var(--gray-300);
+}
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.payment-item {
+  padding: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+}
+
+.payment-item h3 {
+  color: var(--blue);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.payment-item p {
+  color: var(--gray-300);
+  font-size: 0.95rem;
+}
+
+/* ---- Projects ---- */
+.projects {
+  padding: 6rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.project-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.project {
+  padding: 2rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+}
+
+.project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.project-header h3 {
+  margin-bottom: 0;
+}
+
+.project-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2em 0.6em;
+  border-radius: 3px;
+}
+
+.status-live {
+  background: #e6f9e6;
+  color: #1a7a1a;
+}
+
+.status-dev {
+  background: var(--blue-light);
+  color: var(--blue);
+}
+
+.project p {
+  font-size: 0.95rem;
+}
+
+.project-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ---- Adopt ---- */
+.adopt {
+  padding: 6rem 0;
+  background: var(--blue);
+  color: var(--white);
+}
+
+.adopt h2 {
+  color: var(--white);
+}
+
+.adopt ol li {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.adopt a {
+  color: var(--white);
+  text-decoration: underline;
+}
+
+.adopt code {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+}
+
+/* ---- Footer ---- */
+.site-footer {
+  padding: 4rem 0 2rem;
+  border-top: 1px solid var(--gray-100);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 3rem;
+}
+
+.footer-content .logo {
+  margin-bottom: 0.5rem;
+}
+
+.footer-content p {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-links a {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+}
+
+.footer-links a:hover {
+  color: var(--black);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--gray-100);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-bottom p {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  .hero {
+    padding: 5rem 0 4rem;
+  }
+
+  .problem,
+  .constitution,
+  .zurich,
+  .payments,
+  .projects,
+  .adopt {
+    padding: 4rem 0;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .tenets {
+    grid-template-columns: 1fr;
+  }
+
+  .zurich-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-list {
+    grid-template-columns: 1fr;
+  }
+
+  nav {
+    display: none;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
