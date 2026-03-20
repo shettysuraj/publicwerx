@@ -1,17 +1,19 @@
 /* ============================================
    PublicWerx — Swiss editorial, electric blue
+   Dark mode
    ============================================ */
 
 :root {
-  --blue: #0055ff;
-  --blue-light: #e8f0ff;
-  --black: #0a0a0a;
-  --gray-900: #1a1a1a;
-  --gray-700: #444;
-  --gray-500: #777;
-  --gray-300: #ccc;
-  --gray-100: #f5f5f5;
-  --white: #fff;
+  --blue: #4488ff;
+  --blue-dim: rgba(68, 136, 255, 0.15);
+  --bg: #0c0c0c;
+  --bg-raised: #141414;
+  --bg-card: #1a1a1a;
+  --text: #d4d4d4;
+  --text-bright: #f0f0f0;
+  --text-muted: #888;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
   --max-width: 1120px;
@@ -34,8 +36,8 @@ body {
   font-family: var(--font-sans);
   font-size: 17px;
   line-height: 1.65;
-  color: var(--gray-900);
-  background: var(--white);
+  color: var(--text);
+  background: var(--bg);
 }
 
 /* Container */
@@ -50,6 +52,7 @@ h1, h2, h3 {
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
+  color: var(--text-bright);
 }
 
 h1 {
@@ -68,7 +71,7 @@ h3 {
 
 p {
   margin-bottom: 1rem;
-  color: var(--gray-700);
+  color: var(--text);
 }
 
 p:last-child {
@@ -87,9 +90,10 @@ a:hover {
 code {
   font-family: var(--font-mono);
   font-size: 0.9em;
-  background: var(--gray-100);
+  background: var(--bg-card);
   padding: 0.15em 0.4em;
   border-radius: 3px;
+  color: var(--text-bright);
 }
 
 ol {
@@ -98,7 +102,11 @@ ol {
 
 ol li {
   margin-bottom: 0.75rem;
-  color: var(--gray-700);
+  color: var(--text);
+}
+
+strong {
+  color: var(--text-bright);
 }
 
 /* ---- Header ---- */
@@ -106,9 +114,9 @@ ol li {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(12, 12, 12, 0.88);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--border);
 }
 
 .site-header .container {
@@ -122,7 +130,7 @@ ol li {
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--black);
+  color: var(--text-bright);
 }
 
 nav {
@@ -133,20 +141,20 @@ nav {
 nav a {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--gray-500);
+  color: var(--text-muted);
   text-decoration: none;
   transition: color 0.15s;
 }
 
 nav a:hover {
-  color: var(--black);
+  color: var(--text-bright);
   text-decoration: none;
 }
 
 /* ---- Hero ---- */
 .hero {
   padding: 8rem 0 6rem;
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--border);
 }
 
 .hero h1 {
@@ -157,7 +165,7 @@ nav a:hover {
 .subtitle {
   font-size: 1.15rem;
   line-height: 1.7;
-  color: var(--gray-500);
+  color: var(--text-muted);
   max-width: 620px;
 }
 
@@ -172,22 +180,18 @@ nav a:hover {
 /* ---- Problem ---- */
 .problem {
   padding: 6rem 0;
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--border);
 }
 
 /* ---- Why Now ---- */
 .why-now {
   padding: 6rem 0;
-  background: var(--gray-900);
-  color: var(--white);
-}
-
-.why-now h2 {
-  color: var(--white);
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--border);
 }
 
 .why-now .section-intro {
-  color: var(--gray-300);
+  color: var(--text-muted);
 }
 
 .why-now-grid {
@@ -204,19 +208,18 @@ nav a:hover {
 }
 
 .why-now-item p {
-  color: var(--gray-300);
   font-size: 0.95rem;
 }
 
 /* ---- Constitution ---- */
 .constitution {
   padding: 6rem 0;
-  background: var(--gray-100);
+  background: var(--bg-raised);
 }
 
 .section-intro {
   font-size: 1.05rem;
-  color: var(--gray-500);
+  color: var(--text-muted);
   max-width: 600px;
   margin-bottom: 3rem;
 }
@@ -229,8 +232,9 @@ nav a:hover {
 
 .tenet {
   padding: 2rem;
-  background: var(--white);
+  background: var(--bg-card);
   border-radius: 6px;
+  border: 1px solid var(--border);
 }
 
 .tenet-number {
@@ -243,7 +247,7 @@ nav a:hover {
 }
 
 .tenet h3 {
-  color: var(--black);
+  color: var(--text-bright);
 }
 
 .tenet p {
@@ -253,7 +257,7 @@ nav a:hover {
 /* ---- Zurich ---- */
 .zurich {
   padding: 6rem 0;
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--border);
 }
 
 .zurich .two-col {
@@ -275,7 +279,7 @@ nav a:hover {
 .pillar h3 {
   font-size: 1.05rem;
   margin-bottom: 0.75rem;
-  color: var(--black);
+  color: var(--text-bright);
 }
 
 .pillar p {
@@ -285,23 +289,18 @@ nav a:hover {
 .zurich-closing {
   font-size: 1.15rem;
   font-weight: 600;
-  color: var(--black);
+  color: var(--text-bright);
   max-width: 600px;
 }
 
 /* ---- Payments ---- */
 .payments {
   padding: 6rem 0;
-  background: var(--gray-900);
-  color: var(--white);
-}
-
-.payments h2 {
-  color: var(--white);
+  background: var(--bg-raised);
 }
 
 .payments .section-intro {
-  color: var(--gray-300);
+  color: var(--text-muted);
 }
 
 .payment-grid {
@@ -312,7 +311,7 @@ nav a:hover {
 
 .payment-item {
   padding: 1.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border-strong);
   border-radius: 6px;
 }
 
@@ -325,14 +324,13 @@ nav a:hover {
 }
 
 .payment-item p {
-  color: var(--gray-300);
   font-size: 0.95rem;
 }
 
 /* ---- Projects ---- */
 .projects {
   padding: 6rem 0;
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--border);
 }
 
 .project-list {
@@ -344,7 +342,7 @@ nav a:hover {
 
 .project {
   padding: 2rem;
-  border: 1px solid var(--gray-300);
+  border: 1px solid var(--border-strong);
   border-radius: 6px;
 }
 
@@ -369,12 +367,12 @@ nav a:hover {
 }
 
 .status-live {
-  background: #e6f9e6;
-  color: #1a7a1a;
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
 }
 
 .status-dev {
-  background: var(--blue-light);
+  background: var(--blue-dim);
   color: var(--blue);
 }
 
@@ -393,31 +391,35 @@ nav a:hover {
 .adopt {
   padding: 6rem 0;
   background: var(--blue);
-  color: var(--white);
+  color: #fff;
 }
 
 .adopt h2 {
-  color: var(--white);
+  color: #fff;
 }
 
 .adopt ol li {
   color: rgba(255, 255, 255, 0.85);
 }
 
+.adopt ol li strong {
+  color: #fff;
+}
+
 .adopt a {
-  color: var(--white);
+  color: #fff;
   text-decoration: underline;
 }
 
 .adopt code {
   background: rgba(255, 255, 255, 0.15);
-  color: var(--white);
+  color: #fff;
 }
 
 /* ---- Footer ---- */
 .site-footer {
   padding: 4rem 0 2rem;
-  border-top: 1px solid var(--gray-100);
+  border-top: 1px solid var(--border);
 }
 
 .footer-content {
@@ -433,7 +435,7 @@ nav a:hover {
 
 .footer-content p {
   font-size: 0.9rem;
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .footer-links {
@@ -443,15 +445,15 @@ nav a:hover {
 
 .footer-links a {
   font-size: 0.9rem;
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .footer-links a:hover {
-  color: var(--black);
+  color: var(--text-bright);
 }
 
 .footer-bottom {
-  border-top: 1px solid var(--gray-100);
+  border-top: 1px solid var(--border);
   padding-top: 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -459,7 +461,7 @@ nav a:hover {
 
 .footer-bottom p {
   font-size: 0.8rem;
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 /* ---- Responsive ---- */
@@ -473,6 +475,7 @@ nav a:hover {
   }
 
   .problem,
+  .why-now,
   .constitution,
   .zurich,
   .payments,

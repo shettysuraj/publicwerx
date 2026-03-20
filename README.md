@@ -20,9 +20,9 @@ In Zurich, the trams have no turnstiles. You simply walk on and ride. The system
 - **The free user is not a bug.** By keeping the core service free, the tool remains a public good. Those who can afford to pay do so to sustain the infrastructure for everyone.
 - **The commons model.** Financial status should never dictate access to essential digital tools.
 
-## Peer-to-Peer Payments
+## Unstoppable Access
 
-We eliminate the middlemen. No Stripe, no PayPal, no gatekeepers. All flows are on-chain and transparent.
+No middleman -- bank, processor, or gatekeeper -- should have the power to de-platform a project or its users. We value censorship resistance over specific payment rails.
 
 | Component | Standard |
 |:---|:---|
@@ -40,8 +40,8 @@ See [CHARTER-ADOPTERS.md](CHARTER-ADOPTERS.md) for the full list and adoption de
 
 ## How to Adopt
 
-1. **Commit.** Ensure your project goals align with the ten tenets.
-2. **Document.** Add a `CONSTITUTION.md` to your repository referencing these rules. Include a succession plan for your users and their data.
+1. **Commit.** Ensure your project goals align with the eight tenets.
+2. **Document.** Add a `CONSTITUTION.md` to your repository referencing these rules. Include a succession plan for your users and their data (see [SUCCESSION.md](SUCCESSION.md) for a template).
 3. **Register.** Open a PR on this repo to be added to [CHARTER-ADOPTERS.md](CHARTER-ADOPTERS.md).
 4. **Uphold.** This is not a badge; it is a commitment to your users.
 
