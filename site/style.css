@@ -194,22 +194,6 @@ nav a:hover {
   color: var(--text-muted);
 }
 
-.why-now-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin-top: 2.5rem;
-}
-
-.why-now-item h3 {
-  color: var(--blue);
-  font-size: 1.05rem;
-  margin-bottom: 0.75rem;
-}
-
-.why-now-item p {
-  font-size: 0.95rem;
-}
 
 /* ---- Constitution ---- */
 .constitution {
@@ -489,9 +473,6 @@ nav a:hover {
     gap: 1.5rem;
   }
 
-  .why-now-grid {
-    grid-template-columns: 1fr;
-  }
 
   .tenets {
     grid-template-columns: 1fr;
