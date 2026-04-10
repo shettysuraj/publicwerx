@@ -230,6 +230,7 @@
           <a href="https://github.com/shettysuraj/publicwerx/discussions">Discussions</a>
           <a href="https://github.com/shettysuraj/publicwerx/blob/main/CONSTITUTION.md">Full Constitution</a>
           <a href="https://github.com/shettysuraj/publicwerx/blob/main/CONTRIBUTING.md">Contribute</a>
+          <a href="#" id="pwx-report-link">Report an issue</a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -238,6 +239,40 @@
       </div>
     </div>
   </footer>
+
+  <!--
+    Lazy-loaded bug report widget. The shared widget script is hosted at
+    surajshetty.com and is used across the portfolio, but on THIS page we
+    deliberately do not load it until the visitor explicitly clicks
+    "Report an issue" in the footer. Passive readers of the charter
+    trigger zero third-party network activity — the "no trackers" claim
+    in the footer stays literally true. Once clicked, the widget opens
+    immediately and remains available for the rest of the session.
+  -->
+  <style>.sjs-bug-trigger { display: none !important; }</style>
+  <script>
+    (function () {
+      var link = document.getElementById('pwx-report-link');
+      if (!link) return;
+      var loaded = false;
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (loaded) {
+          if (window.sjsBugWidget) window.sjsBugWidget.open();
+          return;
+        }
+        loaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://surajshetty.com/lib/bug-report.v1.js';
+        s.setAttribute('data-project', 'publicwerx');
+        s.onload = function () {
+          if (window.sjsBugWidget) window.sjsBugWidget.open();
+        };
+        s.onerror = function () { loaded = false; };
+        document.head.appendChild(s);
+      });
+    }());
+  </script>
 
 </body>
 </html>
