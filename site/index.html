@@ -230,7 +230,6 @@
           <a href="https://github.com/shettysuraj/publicwerx/discussions">Discussions</a>
           <a href="https://github.com/shettysuraj/publicwerx/blob/main/CONSTITUTION.md">Full Constitution</a>
           <a href="https://github.com/shettysuraj/publicwerx/blob/main/CONTRIBUTING.md">Contribute</a>
-          <a href="#" id="pwx-report-link">Report an issue</a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -243,19 +242,54 @@
   <!--
     Lazy-loaded bug report widget. The shared widget script is hosted at
     surajshetty.com and is used across the portfolio, but on THIS page we
-    deliberately do not load it until the visitor explicitly clicks
-    "Report an issue" in the footer. Passive readers of the charter
-    trigger zero third-party network activity — the "no trackers" claim
-    in the footer stays literally true. Once clicked, the widget opens
-    immediately and remains available for the rest of the session.
+    deliberately do not load it until the visitor explicitly clicks the
+    beetle button below. Passive readers of the charter trigger zero
+    third-party network activity — the "no trackers" claim in the footer
+    stays literally true. The beetle lives inline in this HTML (not from
+    the widget script) so it can be visible and clickable BEFORE any
+    third-party code has loaded. Its appearance and position match the
+    widget's own .sjs-bug-trigger exactly so the UX is identical to every
+    other portfolio app.
   -->
-  <style>.sjs-bug-trigger { display: none !important; }</style>
+  <style>
+    /* Hide the widget's own beetle — after the widget loads it would try
+       to inject a second one, which we don't want since we're using our
+       own inline version as the sole entry point. */
+    .sjs-bug-trigger { display: none !important; }
+    .pwx-report-beetle {
+      position: fixed;
+      top: 18px;
+      right: 20px;
+      z-index: 1000;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+      opacity: 0.5;
+      padding: 4px 10px;
+      transition: opacity 0.2s;
+      font-family: inherit;
+    }
+    .pwx-report-beetle:hover,
+    .pwx-report-beetle:focus-visible {
+      opacity: 1;
+      outline: none;
+    }
+  </style>
+  <button
+    type="button"
+    id="pwx-report-beetle"
+    class="pwx-report-beetle"
+    aria-label="Report an issue"
+    title="Report an issue"
+  >&#x1FAB2;</button>
   <script>
     (function () {
-      var link = document.getElementById('pwx-report-link');
-      if (!link) return;
+      var btn = document.getElementById('pwx-report-beetle');
+      if (!btn) return;
       var loaded = false;
-      link.addEventListener('click', function (e) {
+      btn.addEventListener('click', function (e) {
         e.preventDefault();
         if (loaded) {
           if (window.sjsBugWidget) window.sjsBugWidget.open();
