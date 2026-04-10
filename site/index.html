@@ -256,18 +256,22 @@
        to inject a second one, which we don't want since we're using our
        own inline version as the sole entry point. */
     .sjs-bug-trigger { display: none !important; }
+    /* Match .sjs-bug-trigger exactly so the beetle looks and lives in
+       the same place as every other portfolio app. z-index 900 sits
+       above the site-header (100) and below the widget modal (1100). */
     .pwx-report-beetle {
       position: fixed;
-      top: 18px;
-      right: 20px;
-      z-index: 1000;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 900;
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 22px;
+      font-size: 20px;
       line-height: 1;
       opacity: 0.5;
-      padding: 4px 10px;
+      padding: 2px 10px;
       transition: opacity 0.2s;
       font-family: inherit;
     }
