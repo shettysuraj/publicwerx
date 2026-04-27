@@ -15,7 +15,7 @@ const path = require('path');
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3016;
 
-app.set('trust proxy', false);
+app.set('trust proxy', 1);
 
 app.use(helmet({
   contentSecurityPolicy: {
