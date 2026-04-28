@@ -48,7 +48,8 @@ app.use(cors({
       'https://gamefilm.org', 'https://www.gamefilm.org',
       'https://aapta.publicwerx.org',
     ];
-    if (allowed.includes(origin) || origin.startsWith('http://localhost')) return cb(null, true);
+    if (allowed.includes(origin)) return cb(null, true);
+    if (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost')) return cb(null, true);
     try {
       const h = new URL(origin).hostname;
       if (h.endsWith('.gamefilm.org') || h.endsWith('.publicwerx.org')) return cb(null, true);

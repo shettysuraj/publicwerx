@@ -399,11 +399,12 @@ router.post('/system/deploy/:name', requireBugAdmin, async (req, res) => {
 
   child.stdout.on('data', d => { output += d.toString(); });
   child.stderr.on('data', d => { output += d.toString(); });
+  const sanitize = (s) => s.replace(/(?:^|\n)\s*\w*(?:KEY|SECRET|PASS|TOKEN|CREDENTIAL)\w*=.*/gi, '\n[REDACTED]');
   child.on('close', code => {
-    respond(200, { ok: code === 0, exitCode: code, output });
+    respond(200, { ok: code === 0, exitCode: code, output: sanitize(output) });
   });
   child.on('error', err => {
-    respond(500, { error: err.message, output });
+    respond(500, { error: 'Deploy failed', output: sanitize(output) });
   });
 });
 
@@ -438,11 +439,13 @@ router.post('/system/backups/:name', requireBugAdmin, async (req, res) => {
   res.status(status).json(data);
 });
 
+const SAFE_BACKUP_FILENAME = /^[\w.\-]+\.db\.gz$/;
+
 router.post('/system/backups/:name/restore', requireBugAdmin, async (req, res) => {
   const remote = REMOTE_PROJECTS[req.params.name];
   if (!remote) return res.status(400).json({ error: 'Unknown project' });
   const { filename } = req.body;
-  if (!filename) return res.status(400).json({ error: 'filename required' });
+  if (!filename || !SAFE_BACKUP_FILENAME.test(filename)) return res.status(400).json({ error: 'Invalid filename' });
   const { status, data } = await remoteBackupCall(`${remote.url}/backups/restore`, 'POST', { filename });
   res.status(status).json(data);
 });
@@ -450,6 +453,7 @@ router.post('/system/backups/:name/restore', requireBugAdmin, async (req, res) =
 router.delete('/system/backups/:name/:filename', requireBugAdmin, async (req, res) => {
   const remote = REMOTE_PROJECTS[req.params.name];
   if (!remote) return res.status(400).json({ error: 'Unknown project' });
+  if (!SAFE_BACKUP_FILENAME.test(req.params.filename)) return res.status(400).json({ error: 'Invalid filename' });
   const { status, data } = await remoteBackupCall(`${remote.url}/backups/${encodeURIComponent(req.params.filename)}`, 'DELETE');
   res.status(status).json(data);
 });
