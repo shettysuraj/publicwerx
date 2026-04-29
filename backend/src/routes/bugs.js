@@ -319,6 +319,7 @@ const REMOTE_PROJECTS = {
   gopbnj:           { url: 'http://localhost:3012/api/system', server: 'hub', backup: true },
   surajshetty:      { url: 'http://localhost:3010/api/system', server: 'hub', backup: true },
   aapta:            { url: 'http://localhost:3015/api/system', server: 'hub', backup: true },
+  samanu:           { url: 'http://localhost:3025/api/system', server: 'hub', backup: true },
 };
 const REMOTE_SYSTEM_KEY = () => process.env.REMOTE_SYSTEM_KEY || '';
 
