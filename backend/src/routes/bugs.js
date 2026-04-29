@@ -315,8 +315,8 @@ const REMOTE_PROJECTS = {
   gamefilm:         { url: 'https://gamefilm.org/api/system', server: 'game', backup: true },
   peerlinq:         { url: 'https://peerlinq.org/api/system', server: 'tools', backup: true },
   srj1cc:           { url: 'https://srj1.cc/api/system', server: 'tools', backup: true },
-  'auth-service':   { url: 'https://auth.publicwerx.org/api/system', server: 'auth' },
-  gopbnj:           { url: 'http://localhost:3012/api/system', server: 'hub' },
+  'auth-service':   { url: 'https://auth.publicwerx.org/api/system', server: 'auth', backup: true },
+  gopbnj:           { url: 'http://localhost:3012/api/system', server: 'hub', backup: true },
   surajshetty:      { url: 'http://localhost:3010/api/system', server: 'hub', backup: true },
   aapta:            { url: 'http://localhost:3015/api/system', server: 'hub', backup: true },
 };
