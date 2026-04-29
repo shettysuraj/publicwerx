@@ -60,7 +60,7 @@ function computeDedupHash(project, description) {
   return crypto.createHash('sha256').update(`${project}:${norm}`).digest('hex').slice(0, 16);
 }
 
-const KNOWN_PROJECTS = ['surajshetty', 'gopbnj', 'srj1cc', 'wordhop', 'memewhatyasay', 'gottapickone', 'njordfellfutures', 'peerlinq', 'publicwerx', 'gamefilm', 'aapta'];
+const KNOWN_PROJECTS = ['surajshetty', 'gopbnj', 'srj1cc', 'wordhop', 'memewhatyasay', 'gottapickone', 'njordfellfutures', 'peerlinq', 'publicwerx', 'gamefilm', 'aapta', 'samanu'];
 
 const TYPE_FIELD = { name: 'type', type: 'toggle', options: ['bug', 'feature'], default: 'bug' };
 const DESCRIPTION_FIELD = { name: 'description', type: 'textarea', label: "What's on your mind?", placeholder: 'Describe the bug or your idea...', maxLength: 2000, required: true };

@@ -18,6 +18,7 @@ const ALLOWED_ORIGINS = [
   'https://publicwerx.org', 'https://www.publicwerx.org',
   'https://gamefilm.org', 'https://www.gamefilm.org',
   'https://aapta.publicwerx.org',
+  'https://samanu.publicwerx.org',
 ];
 
 let formConfigCache = null;
