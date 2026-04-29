@@ -3,7 +3,7 @@ import { authFetch, AUTH_BASE } from '../../lib/adminAuth';
 
 const ADMIN = `${AUTH_BASE}/admin`;
 const TIER_SYNC = '/api/subscriptions/sync-tier';
-const SUB_APPS = ['aapta', 'samanu'];
+const SUB_APPS = ['aapta', 'samanu', 'gopbnj', 'wordhop', 'memewhatyasay', 'gamefilm'];
 
 function fmtDate(ts) {
   if (!ts) return '—';
