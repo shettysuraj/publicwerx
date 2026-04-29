@@ -86,7 +86,7 @@ repo/
 - **Deploy panel.** LOCAL_DEPLOY_COMMANDS for hub-box projects (surajshetty, gopbnj, aapta, publicwerx). Remote projects reached via HTTPS to their /api/system endpoints.
 - **Form config per project.** `bug_form_config` table with project-specific overrides (memewhatyasay: gameCode, gottapickone: roundId, aapta: no email fields). Cached in memory, invalidated on admin PUT.
 - **Rate limiting.** Global 200/min, API 60/min, bug submit 3/15min, form config 10/min.
-- **Subscription management.** `subscriptions` table in publicwerx.db tracks annual subs (type: `app` $36/yr or `publicwerx` $60/yr, with `starts_at`/`expires_at`). Admin manages from Users tab — expand user → add/remove subs. Backend proxies tier toggles to app backends (aapta:3015, samanu:3025) via localhost. No separate Subs tab — subs are a property of users.
+- **Subscription management.** Auth service `subscriptions` table tracks annual subs ($36/yr per app or $60/yr all). Admin manages from Users tab — expand user → add/remove subs. Backend proxies tier sync to all 6 app backends via `POST /api/subscriptions/sync-tier`. Two auth modes: JWT admin auth for publicwerx-core apps (aapta:3015, samanu:3025 via localhost), system-key auth for Group B/hybrid apps (gopbnj:3012 via localhost, wordhop/memewhatyasay/gamefilm via public HTTPS URLs). SUB_APPS: `['aapta', 'samanu', 'gopbnj', 'wordhop', 'memewhatyasay', 'gamefilm']`.
 
 ## Environment Variables
 
