@@ -118,6 +118,20 @@ for (const project of KNOWN_PROJECTS) {
   }
 }
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    auth_user_id TEXT NOT NULL,
+    type TEXT NOT NULL CHECK(type IN ('app', 'publicwerx')),
+    app_id TEXT,
+    starts_at INTEGER NOT NULL,
+    expires_at INTEGER NOT NULL,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_sub_user ON subscriptions(auth_user_id);
+  CREATE INDEX IF NOT EXISTS idx_sub_expires ON subscriptions(expires_at);
+`);
+
 function addColumnIfMissing(table, column, definition) {
   const cols = db.prepare(`PRAGMA table_info(${table})`).all();
   if (!cols.some(c => c.name === column)) {

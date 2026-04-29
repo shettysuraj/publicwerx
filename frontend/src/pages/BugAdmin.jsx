@@ -13,7 +13,6 @@ import {
 } from '../lib/adminAuth'
 import UsersTab from '../components/admin/UsersTab'
 import AppsTab from '../components/admin/AppsTab'
-import SubscriptionsTab from '../components/admin/SubscriptionsTab'
 
 const API = '/api/bugs'
 
@@ -211,7 +210,7 @@ export default function BugAdmin() {
         </div>
 
         <div className="flex gap-1 mb-4 bg-zinc-900 rounded-lg p-0.5 overflow-x-auto">
-          {[['deploy', 'Deploy'], ['backups', 'Backups'], ['users', 'Users'], ['apps', 'Apps'], ['subs', 'Subs'], ['reports', `Reports (${total})`]].map(([key, label]) => (
+          {[['deploy', 'Deploy'], ['backups', 'Backups'], ['users', 'Users'], ['apps', 'Apps'], ['reports', `Reports (${total})`]].map(([key, label]) => (
             <button key={key} onClick={() => setTab(key)}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition shrink-0 ${tab === key ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-zinc-200'}`}
             >{label}</button>
@@ -227,7 +226,6 @@ export default function BugAdmin() {
 
         {tab === 'users' && <UsersTab />}
         {tab === 'apps' && <AppsTab />}
-        {tab === 'subs' && <SubscriptionsTab />}
 
         {tab === 'reports' && <>
           <div className="flex gap-2 mb-4 flex-wrap">

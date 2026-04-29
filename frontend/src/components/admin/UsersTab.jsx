@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { authFetch, AUTH_BASE } from '../../lib/adminAuth';
 
 const ADMIN = `${AUTH_BASE}/admin`;
+const SUBS_API = '/api/subscriptions';
+const SUB_APPS = ['aapta', 'samanu'];
 
 function fmtDate(ts) {
   if (!ts) return '—';
@@ -49,15 +51,24 @@ export default function UsersTab() {
   const [showIps, setShowIps] = useState(false);
   const [newIp, setNewIp] = useState('');
   const [newIpReason, setNewIpReason] = useState('');
+  const [subs, setSubs] = useState([]);
+  const [subBusy, setSubBusy] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const r = await authFetch(`${ADMIN}/users`);
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const d = await r.json();
-      setUsers(d.users || []);
+      const [usersRes, subsRes] = await Promise.all([
+        authFetch(`${ADMIN}/users`),
+        authFetch(SUBS_API),
+      ]);
+      if (!usersRes.ok) throw new Error(`Users: HTTP ${usersRes.status}`);
+      const usersData = await usersRes.json();
+      setUsers(usersData.users || []);
+      if (subsRes.ok) {
+        const subsData = await subsRes.json();
+        setSubs(subsData.subscriptions || []);
+      }
     } catch (e) {
       setError(e.message);
     } finally {
@@ -165,6 +176,40 @@ export default function UsersTab() {
   const onUnbanIp = async (ip) => {
     if (!confirm(`Unban ${ip}?`)) return;
     if (await action(`/ips/${encodeURIComponent(ip)}`, 'DELETE')) loadIps();
+  };
+
+  function getUserSubs(authUserId) {
+    const now = Date.now();
+    return subs.filter(s => s.auth_user_id === authUserId && s.starts_at <= now && s.expires_at > now);
+  }
+
+  function getUserSubLabel(authUserId) {
+    const active = getUserSubs(authUserId);
+    if (active.some(s => s.type === 'publicwerx')) return 'PWX';
+    const appSubs = active.filter(s => s.type === 'app');
+    if (appSubs.length > 0) return appSubs.map(s => s.app_id).join(', ');
+    return null;
+  }
+
+  const activateSub = async (authUserId, type, appId) => {
+    setSubBusy(true);
+    setError(null);
+    try {
+      const r = await authFetch(`${SUBS_API}/activate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ authUserId, type, appId }),
+      });
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        throw new Error(d.error || `HTTP ${r.status}`);
+      }
+      await load();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSubBusy(false);
+    }
   };
 
   const ts = (v) => {
@@ -303,6 +348,7 @@ export default function UsersTab() {
                       {isLocked && !isBanned && <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-orange-500/20 text-orange-400 border border-orange-500/30">LOCKED</span>}
                       {isUnverified && !isBanned && <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">UNVERIFIED</span>}
                       {u.active_sessions > 0 && <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-green-500/20 text-green-400 border border-green-500/30">{u.active_sessions} live</span>}
+                      {getUserSubLabel(u.id) && <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-violet-500/20 text-violet-400 border border-violet-500/30">{getUserSubLabel(u.id)}</span>}
                     </div>
                   </div>
                   <div className="flex items-center gap-3 text-[10px] text-zinc-500">
@@ -351,6 +397,89 @@ export default function UsersTab() {
                             )) : <span className="text-zinc-600">—</span>}
                           </div>
                         </div>
+
+                        {(() => {
+                          const now = Date.now();
+                          const userSubs = subs.filter(s => s.auth_user_id === u.id);
+                          const activeSubs = userSubs.filter(s => s.starts_at <= now && s.expires_at > now);
+                          const expiredSubs = userSubs.filter(s => s.expires_at <= now);
+                          const hasPwx = activeSubs.some(s => s.type === 'publicwerx');
+                          const activeAppIds = new Set(activeSubs.filter(s => s.type === 'app').map(s => s.app_id));
+
+                          return (
+                            <div>
+                              <div className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1.5">Subscriptions</div>
+
+                              {activeSubs.length === 0 && (
+                                <div className="text-[11px] text-zinc-600 italic mb-2">No active subscriptions</div>
+                              )}
+
+                              {activeSubs.length > 0 && (
+                                <div className="space-y-1 mb-2">
+                                  {activeSubs.map(s => (
+                                    <div key={s.id} className="flex items-center justify-between gap-2 py-1 px-2 bg-green-500/5 border border-green-500/20 rounded">
+                                      <div className="text-[11px]">
+                                        <span className="text-green-400 font-medium">
+                                          {s.type === 'publicwerx' ? 'PublicWerx (all apps)' : s.app_id}
+                                        </span>
+                                        <span className="text-zinc-500 ml-2">expires {fmtDate(s.expires_at)}</span>
+                                      </div>
+                                      <button
+                                        onClick={async () => {
+                                          if (!confirm(`Remove ${s.type === 'publicwerx' ? 'PublicWerx' : s.app_id} subscription? User keeps access until ${fmtDate(s.expires_at)}.`)) return;
+                                          setSubBusy(true);
+                                          try {
+                                            const r = await authFetch(`${SUBS_API}/deactivate`, {
+                                              method: 'POST',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify({ authUserId: u.id, type: s.type, appId: s.app_id }),
+                                            });
+                                            if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
+                                            await load();
+                                            if (expanded === u.id) loadDetail(u.id);
+                                          } catch (e) { setError(e.message); } finally { setSubBusy(false); }
+                                        }}
+                                        disabled={subBusy}
+                                        className="px-1.5 py-0.5 text-[9px] text-red-400 border border-red-500/30 rounded hover:bg-red-500/10 disabled:opacity-40"
+                                      >Remove</button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {expiredSubs.length > 0 && (
+                                <div className="space-y-0.5 mb-2">
+                                  {expiredSubs.slice(0, 3).map(s => (
+                                    <div key={s.id} className="flex items-center gap-2 py-0.5 text-[10px] text-zinc-600">
+                                      <span>{s.type === 'publicwerx' ? 'PublicWerx' : s.app_id}</span>
+                                      <span>expired {fmtDate(s.expires_at)}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              <div className="flex gap-1.5 flex-wrap">
+                                {!hasPwx && (
+                                  <button
+                                    onClick={() => activateSub(u.id, 'publicwerx')}
+                                    disabled={subBusy}
+                                    className="px-2 py-1 bg-violet-500/10 border border-violet-500/30 text-violet-400 rounded text-[10px] hover:bg-violet-500/20 disabled:opacity-40"
+                                  >+ PublicWerx ($60/yr)</button>
+                                )}
+                                {!hasPwx && SUB_APPS.map(appId => (
+                                  !activeAppIds.has(appId) && (
+                                    <button
+                                      key={appId}
+                                      onClick={() => activateSub(u.id, 'app', appId)}
+                                      disabled={subBusy}
+                                      className="px-2 py-1 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded text-[10px] hover:bg-blue-500/20 disabled:opacity-40"
+                                    >+ {appId} ($36/yr)</button>
+                                  )
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })()}
 
                         <div>
                           <div className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Active sessions ({detail.sessions.length})</div>
