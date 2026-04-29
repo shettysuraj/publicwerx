@@ -316,7 +316,7 @@ const REMOTE_PROJECTS = {
   peerlinq:         { url: 'https://peerlinq.org/api/system', server: 'tools', backup: true },
   srj1cc:           { url: 'https://srj1.cc/api/system', server: 'tools', backup: true },
   'auth-service':   { url: 'https://auth.publicwerx.org/api/system', server: 'auth', backup: true },
-  gopbnj:           { url: 'http://localhost:3012/api/system', server: 'hub', backup: true },
+  sahaya:           { url: 'http://localhost:3012/api/system', server: 'hub', backup: true },
   surajshetty:      { url: 'http://localhost:3010/api/system', server: 'hub', backup: true },
   aapta:            { url: 'http://localhost:3015/api/system', server: 'hub', backup: true },
   samanu:           { url: 'http://localhost:3025/api/system', server: 'hub', backup: true },
@@ -348,7 +348,7 @@ router.get('/system', requireBugAdmin, (req, res) => {
 
 const LOCAL_DEPLOY_COMMANDS = {
   surajshetty: 'cd /home/ubuntu/surajshetty && ./infra/deploy.sh main',
-  gopbnj: 'cd /home/ubuntu/projects/gopbnj && ./deploy.sh',
+  sahaya: 'cd /home/ubuntu/projects/gopbnj && ./deploy.sh',
   aapta: 'cd /home/ubuntu/aapta && ./deploy.sh',
   publicwerx: 'cd /home/ubuntu/projects/publicwerx/repo && ./deploy.sh',
 };
