@@ -53,10 +53,11 @@ repo/
 ├── frontend/
 │   ├── src/
 │   │   ├── main.jsx              # Router with basename="/admin"
-│   │   ├── pages/BugAdmin.jsx    # 5-tab admin panel (deploy, backups, users, apps, reports)
+│   │   ├── pages/BugAdmin.jsx    # 6-tab admin panel (deploy, backups, users, apps, subs, reports)
 │   │   ├── components/admin/
 │   │   │   ├── UsersTab.jsx      # Auth service user management
-│   │   │   └── AppsTab.jsx       # SSO app registry management
+│   │   │   ├── AppsTab.jsx       # SSO app registry management
+│   │   │   └── SubscriptionsTab.jsx # Per-app subscription tier management
 │   │   └── lib/adminAuth.js      # SSO client (APP_ID: publicwerx-admin)
 │   ├── index.html
 │   ├── vite.config.js            # base: '/admin/', outDir: ../backend/public/admin
