@@ -86,6 +86,7 @@ app.use('/admin', express.static(path.join(__dirname, '../public/admin')));
 
 // Routes
 app.use('/api/bugs', require('./routes/bugs'));
+app.use('/api/subscriptions', require('./routes/subscriptions'));
 app.use('/api/system', require('./routes/system'));
 
 // Health check
