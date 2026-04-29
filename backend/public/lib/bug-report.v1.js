@@ -568,15 +568,17 @@
     if (!userInfo && window.__sjsBugWidgetPendingUser) {
       userInfo = window.__sjsBugWidgetPendingUser;
     }
-    triggerEl = el('button', {
-      type: 'button',
-      class: 'sjs-bug-trigger',
-      'aria-label': 'Report a bug',
-      title: 'Report a bug',
-      text: BEETLE,
-      onclick: open
-    });
-    document.body.appendChild(triggerEl);
+    if (!script.hasAttribute('data-no-trigger')) {
+      triggerEl = el('button', {
+        type: 'button',
+        class: 'sjs-bug-trigger',
+        'aria-label': 'Report a bug',
+        title: 'Report a bug',
+        text: BEETLE,
+        onclick: open
+      });
+      document.body.appendChild(triggerEl);
+    }
   }
 
   if (document.readyState === 'loading') {
