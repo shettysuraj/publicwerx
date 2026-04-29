@@ -52,6 +52,7 @@ export default function UsersTab() {
   const [newIp, setNewIp] = useState('');
   const [newIpReason, setNewIpReason] = useState('');
   const [subBusy, setSubBusy] = useState(false);
+  const [subForm, setSubForm] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -187,14 +188,34 @@ export default function UsersTab() {
     } catch {}
   }
 
-  const activateSub = async (userId, appId) => {
+  function toInputDate(ms) {
+    const d = new Date(ms);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  function openSubForm(userId, appId) {
+    const now = Date.now();
+    setSubForm({
+      userId,
+      appId,
+      start: toInputDate(now),
+      end: toInputDate(now + 365 * 24 * 60 * 60 * 1000),
+    });
+  }
+
+  const activateSub = async () => {
+    if (!subForm) return;
+    const { userId, appId, start, end } = subForm;
+    const startsAt = new Date(start + 'T00:00:00').getTime();
+    const expiresAt = new Date(end + 'T23:59:59.999').getTime();
     setSubBusy(true);
     setError(null);
+    setSubForm(null);
     try {
       const r = await authFetch(`${ADMIN}/users/${userId}/subscriptions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ appId }),
+        body: JSON.stringify({ appId, startsAt, expiresAt }),
       });
       if (!r.ok) {
         const d = await r.json().catch(() => ({}));
@@ -442,7 +463,7 @@ export default function UsersTab() {
                                         <span className="text-green-400 font-medium">
                                           {s.app_id === '*' ? 'PublicWerx (all apps)' : s.app_id}
                                         </span>
-                                        <span className="text-zinc-500 ml-2">expires {fmtDate(s.expires_at)}</span>
+                                        <span className="text-zinc-500 ml-2">{fmtDate(s.starts_at)} — {fmtDate(s.expires_at)}</span>
                                       </div>
                                       <button
                                         onClick={() => {
@@ -457,10 +478,47 @@ export default function UsersTab() {
                                 </div>
                               )}
 
+                              {subForm && subForm.userId === u.id && (
+                                <div className="mb-2 p-2 bg-zinc-800 border border-zinc-700 rounded space-y-2">
+                                  <div className="text-[11px] text-zinc-300 font-medium">
+                                    Add {subForm.appId === '*' ? 'PublicWerx (all apps)' : subForm.appId}
+                                  </div>
+                                  <div className="flex gap-2 items-center">
+                                    <label className="text-[10px] text-zinc-500 w-10">Start</label>
+                                    <input
+                                      type="date"
+                                      value={subForm.start}
+                                      onChange={e => setSubForm(f => ({ ...f, start: e.target.value }))}
+                                      className="bg-zinc-900 border border-zinc-600 text-zinc-200 text-[11px] px-1.5 py-0.5 rounded"
+                                    />
+                                  </div>
+                                  <div className="flex gap-2 items-center">
+                                    <label className="text-[10px] text-zinc-500 w-10">End</label>
+                                    <input
+                                      type="date"
+                                      value={subForm.end}
+                                      onChange={e => setSubForm(f => ({ ...f, end: e.target.value }))}
+                                      className="bg-zinc-900 border border-zinc-600 text-zinc-200 text-[11px] px-1.5 py-0.5 rounded"
+                                    />
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={activateSub}
+                                      disabled={subBusy}
+                                      className="px-2 py-1 bg-green-500/10 border border-green-500/30 text-green-400 rounded text-[10px] hover:bg-green-500/20 disabled:opacity-40"
+                                    >Confirm</button>
+                                    <button
+                                      onClick={() => setSubForm(null)}
+                                      className="px-2 py-1 text-zinc-500 text-[10px] hover:text-zinc-300"
+                                    >Cancel</button>
+                                  </div>
+                                </div>
+                              )}
+
                               <div className="flex gap-1.5 flex-wrap">
                                 {!hasPwx && (
                                   <button
-                                    onClick={() => activateSub(u.id, '*')}
+                                    onClick={() => openSubForm(u.id, '*')}
                                     disabled={subBusy}
                                     className="px-2 py-1 bg-violet-500/10 border border-violet-500/30 text-violet-400 rounded text-[10px] hover:bg-violet-500/20 disabled:opacity-40"
                                   >+ PublicWerx ($60/yr)</button>
@@ -469,7 +527,7 @@ export default function UsersTab() {
                                   !activeAppIds.has(appId) && (
                                     <button
                                       key={appId}
-                                      onClick={() => activateSub(u.id, appId)}
+                                      onClick={() => openSubForm(u.id, appId)}
                                       disabled={subBusy}
                                       className="px-2 py-1 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded text-[10px] hover:bg-blue-500/20 disabled:opacity-40"
                                     >+ {appId} ($36/yr)</button>
