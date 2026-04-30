@@ -116,6 +116,6 @@ app.use((err, req, res, _next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`[publicwerx] listening on port ${PORT}`);
+app.listen(PORT, '127.0.0.1', () => {
+  console.log(`[publicwerx] listening on 127.0.0.1:${PORT}`);
 });
