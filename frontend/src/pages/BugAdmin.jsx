@@ -202,7 +202,10 @@ export default function BugAdmin() {
     <div className="min-h-screen bg-zinc-950 text-zinc-300">
       <div className="max-w-2xl mx-auto px-3 py-4 sm:px-4 sm:py-6">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-lg font-bold text-white">Admin</h1>
+          <div className="flex items-center gap-2">
+            <img src="/favicon.svg" alt="PublicWerx" width="24" height="24" />
+            <h1 className="text-lg font-bold text-white">Admin</h1>
+          </div>
           <div className="flex gap-2">
             <button onClick={() => tab === 'reports' ? loadReports() : (tab === 'deploy' || tab === 'backups') ? loadSystem() : null} className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-xs hover:bg-zinc-700 transition">{systemLoading ? 'Loading...' : 'Refresh'}</button>
             <button onClick={handleLogout} className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-xs hover:bg-zinc-700 transition">Logout</button>
