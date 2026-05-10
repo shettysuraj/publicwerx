@@ -6,6 +6,13 @@ const { getLatestChecks, getAllHistory, getHistory, getServiceList, runHealthChe
 router.get('/public', (req, res) => {
   const latest = getLatestChecks();
   const services = getServiceList();
+  const history = getAllHistory(24);
+
+  const historyByService = {};
+  for (const h of history) {
+    if (!historyByService[h.service]) historyByService[h.service] = [];
+    historyByService[h.service].push({ status: h.status, ms: h.response_ms, ts: h.checked_at });
+  }
 
   const result = services.map(s => {
     const check = latest.find(c => c.service === s.id);
@@ -15,6 +22,8 @@ router.get('/public', (req, res) => {
       status: check?.status || 'unknown',
       ms: check?.response_ms || null,
       checkedAt: check?.checked_at || null,
+      error: check?.error || null,
+      history: historyByService[s.id] || [],
     };
   });
 
