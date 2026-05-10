@@ -36,9 +36,12 @@ repo/
 │   │   ├── db/database.js        # SQLite: bug_reports, bug_form_config, bug_comments
 │   ��   ├── routes/
 │   │   │   ├── bugs.js           # Bug CRUD, deploy panel, backup proxy, form config
+│   │   │   ├── status.js         # Fleet health status (public + admin endpoints)
+│   │   │   ├── subscriptions.js  # Subscription tier sync
 │   │   │   └── system.js         # publicwerx-core system routes (health, deploy, backup)
 │   │   └── lib/
 │   │       ├── requireAdmin.js   # RS256 JWT verify via auth.publicwerx.org public key
+│   │       ├── health.js         # Fleet uptime monitor (pings 12 services every 3min)
 │   │       └── email.js          # Bug notification + reply emails (SES SMTP)
 │   ├── data/                     # SQLite DB (gitignored)
 │   ├── public/
@@ -48,12 +51,13 @@ repo/
 │   │   │   └── favicon.svg
 │   │   ├── lib/
 │   │   │   └── bug-report.v1.js  # Widget JS (tracked, served with CORP cross-origin)
+│   │   ├── status/               # Public status page (static HTML+JS, no build)
 │   │   └── admin/                # React build output (gitignored)
 │   └── package.json
 ├── frontend/
 │   ├── src/
 │   │   ├── main.jsx              # Router with basename="/admin"
-│   │   ├── pages/BugAdmin.jsx    # 5-tab admin panel (deploy, backups, users, apps, reports)
+│   │   ├── pages/BugAdmin.jsx    # 6-tab admin panel (status, deploy, backups, users, apps, reports)
 │   │   ├── components/admin/
 │   │   │   ├── UsersTab.jsx      # Auth user management + subscription management (add/remove subs per user)
 │   │   │   └── AppsTab.jsx       # SSO app registry management
@@ -71,11 +75,15 @@ repo/
 1. `/lib/*` — static with CORP cross-origin header (widget JS)
 2. `/admin` assets — `express.static('public/admin')`
 3. `/api/bugs/*` — bug routes
-4. `/api/system/*` — publicwerx-core
-5. `/health` — health check
-6. `/api/*` — 404 catch-all
-7. `/admin*` — SPA fallback -> `public/admin/index.html`
-8. `/` and landing assets — `express.static('public/landing')`
+4. `/api/subscriptions/*` — subscription sync
+5. `/api/system/*` — publicwerx-core
+6. `/status` — public status page (static HTML+JS, no auth)
+7. `/api/status/public` — public status JSON (no auth, 24h history)
+8. `/api/status/*` — admin status routes (auth required)
+9. `/health` — health check
+10. `/api/*` — 404 catch-all
+11. `/admin*` — SPA fallback -> `public/admin/index.html`
+12. `/` and landing assets — `express.static('public/landing')`
 
 ## Key Patterns
 
@@ -86,6 +94,7 @@ repo/
 - **Deploy panel.** LOCAL_DEPLOY_COMMANDS for hub-box projects (surajshetty, gopbnj, aapta, publicwerx). Remote projects reached via HTTPS to their /api/system endpoints.
 - **Form config per project.** `bug_form_config` table with project-specific overrides (memewhatyasay: gameCode, gottapickone: roundId, aapta: no email fields). Cached in memory, invalidated on admin PUT.
 - **Rate limiting.** Global 200/min, API 60/min, bug submit 3/15min, form config 10/min.
+- **Fleet health monitoring.** Pings 12 services every 3 minutes, stores results in `health_checks` table (7-day retention). Public status page at `/status` (static HTML+JS, no React). Admin Status tab shows same data plus errors, slugs, and manual re-check button. PeerLinq no longer does health checks — only SSL/headers/admin security scans remain there.
 - **Subscription management.** Auth service `subscriptions` table tracks annual subs ($36/yr per app or $60/yr all). Admin manages from Users tab — expand user → add/remove subs. Group A apps (aapta, samanu) enforce via JWT `sub_apps` claim directly — no local tier sync needed. Group B apps (gopbnj, wordhop, memewhatyasay, gamefilm) sync local tier via `POST /api/subscriptions/sync-tier` using system-key auth (gopbnj:3012 via localhost, others via public HTTPS). SUB_APPS in frontend: `['aapta', 'samanu', 'gopbnj', 'wordhop', 'memewhatyasay', 'gamefilm']`.
 
 ## Environment Variables
