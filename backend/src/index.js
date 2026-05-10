@@ -89,6 +89,9 @@ app.use('/api/bugs', require('./routes/bugs'));
 app.use('/api/subscriptions', require('./routes/subscriptions'));
 app.use('/api/system', require('./routes/system'));
 
+// Public status page
+app.use('/status', express.static(path.join(__dirname, '../public/status')));
+
 // Health monitoring routes
 app.use('/api/status', require('./routes/status'));
 

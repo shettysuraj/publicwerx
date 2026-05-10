@@ -3,6 +3,24 @@ const router = express.Router();
 const { requireAdmin } = require('../lib/requireAdmin');
 const { getLatestChecks, getAllHistory, getHistory, getServiceList, runHealthChecks } = require('../lib/health');
 
+router.get('/public', (req, res) => {
+  const latest = getLatestChecks();
+  const services = getServiceList();
+
+  const result = services.map(s => {
+    const check = latest.find(c => c.service === s.id);
+    return {
+      id: s.id,
+      label: s.label,
+      status: check?.status || 'unknown',
+      ms: check?.response_ms || null,
+      checkedAt: check?.checked_at || null,
+    };
+  });
+
+  res.json({ services: result, checkedAt: result[0]?.checkedAt || null });
+});
+
 router.get('/', requireAdmin, (req, res) => {
   const latest = getLatestChecks();
   const services = getServiceList();
