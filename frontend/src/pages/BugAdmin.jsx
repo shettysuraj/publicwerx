@@ -13,6 +13,7 @@ import {
 } from '../lib/adminAuth'
 import UsersTab from '../components/admin/UsersTab'
 import AppsTab from '../components/admin/AppsTab'
+import StatusTab from '../components/admin/StatusTab'
 
 const API = '/api/bugs'
 
@@ -207,19 +208,21 @@ export default function BugAdmin() {
             <h1 className="text-lg font-bold text-white">Admin</h1>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => tab === 'reports' ? loadReports() : (tab === 'deploy' || tab === 'backups') ? loadSystem() : null} className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-xs hover:bg-zinc-700 transition">{systemLoading ? 'Loading...' : 'Refresh'}</button>
+            <button onClick={() => tab === 'reports' ? loadReports() : (tab === 'deploy' || tab === 'backups') ? loadSystem() : null} className={`px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-xs hover:bg-zinc-700 transition ${tab === 'status' ? 'hidden' : ''}`}>{systemLoading ? 'Loading...' : 'Refresh'}</button>
             <button onClick={handleLogout} className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-xs hover:bg-zinc-700 transition">Logout</button>
           </div>
         </div>
 
         <div className="flex gap-1 mb-4 bg-zinc-900 rounded-lg p-0.5 overflow-x-auto">
-          {[['deploy', 'Deploy'], ['backups', 'Backups'], ['users', 'Users'], ['apps', 'Apps'], ['reports', `Reports (${total})`]].map(([key, label]) => (
+          {[['status', 'Status'], ['deploy', 'Deploy'], ['backups', 'Backups'], ['users', 'Users'], ['apps', 'Apps'], ['reports', `Reports (${total})`]].map(([key, label]) => (
             <button key={key} onClick={() => setTab(key)}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition shrink-0 ${tab === key ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-zinc-200'}`}
             >{label}</button>
           ))}
           <a href="https://peerlinq.org/security" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-md text-xs font-medium transition shrink-0 text-zinc-400 hover:text-zinc-200">Security &rarr;</a>
         </div>
+
+        {tab === 'status' && <StatusTab />}
 
         {tab === 'deploy' && system && <DeployPanel system={system} />}
         {tab === 'deploy' && !system && <div className="text-center py-12 text-zinc-500 text-sm">{systemLoading ? 'Loading...' : 'Failed to load'}</div>}

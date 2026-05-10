@@ -132,6 +132,21 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_sub_expires ON subscriptions(expires_at);
 `);
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS health_checks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    service TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('up', 'down', 'degraded')),
+    response_ms INTEGER,
+    status_code INTEGER,
+    error TEXT,
+    checked_at TEXT DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_health_service_ts ON health_checks(service, checked_at DESC);
+`);
+
+db.exec("DELETE FROM health_checks WHERE checked_at < datetime('now', '-7 days')");
+
 function addColumnIfMissing(table, column, definition) {
   const cols = db.prepare(`PRAGMA table_info(${table})`).all();
   if (!cols.some(c => c.name === column)) {

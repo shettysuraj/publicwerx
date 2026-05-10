@@ -89,6 +89,9 @@ app.use('/api/bugs', require('./routes/bugs'));
 app.use('/api/subscriptions', require('./routes/subscriptions'));
 app.use('/api/system', require('./routes/system'));
 
+// Health monitoring routes
+app.use('/api/status', require('./routes/status'));
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', ts: new Date().toISOString() });
@@ -118,4 +121,14 @@ app.use((err, req, res, _next) => {
 
 app.listen(PORT, '127.0.0.1', () => {
   console.log(`[publicwerx] listening on 127.0.0.1:${PORT}`);
+
+  const { runHealthChecks } = require('./lib/health');
+  runHealthChecks().then(results => {
+    const up = results.filter(r => r.status === 'up').length;
+    console.log(`[health] initial check: ${up}/${results.length} up`);
+  }).catch(err => console.error('[health] initial check failed:', err.message));
+
+  setInterval(() => {
+    runHealthChecks().catch(err => console.error('[health] check failed:', err.message));
+  }, 3 * 60 * 1000);
 });
