@@ -3,24 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
   <title>PublicWerx — A Constitution for User-Respecting Software</title>
   <meta name="description" content="PublicWerx is a governing charter for digital services that refuse to exploit their users. No ads. No tracking. No dark patterns. Free forever.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
+  <script src="/theme.js"></script>
 </head>
 <body>
 
   <header class="site-header">
     <div class="container">
       <div class="logo"><img src="/favicon.svg" alt="PublicWerx" width="32" height="32"> PublicWerx</div>
-      <nav>
-        <a href="#constitution">Constitution</a>
-        <a href="#zurich">The Zurich Principle</a>
-        <a href="#payments">Payments</a>
-        <a href="#projects">Projects</a>
-        <a href="#adopt">Adopt</a>
-      </nav>
+      <div class="header-right">
+        <nav>
+          <a href="#constitution">Constitution</a>
+          <a href="#zurich">The Zurich Principle</a>
+          <a href="#payments">Payments</a>
+          <a href="#projects">Projects</a>
+          <a href="#adopt">Adopt</a>
+        </nav>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light and dark theme" aria-pressed="false">
+          <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+          <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -51,7 +59,11 @@
       <h2>Why now.</h2>
       <p class="section-intro">The ideas behind PublicWerx are not new. What is new is that the infrastructure finally exists to make them real.</p>
 
-      <p>Users are tired of watching their favorite apps get acquired, gutted, and rebuilt around ad revenue. The word "enshittification" exists because the pattern is so common it needed a name. People are ready for something different. And for the first time, the infrastructure exists to deliver it. With L2 networks and stablecoins, you can run a global service without a bank, a payment processor, or anyone who can cut off your access. The GPL kept code free but did not protect users. Signal and Wikipedia proved the model works but used non-profit structures that are hard to replicate. PublicWerx combines ethics, UX, and financial architecture into a single commitment that any project can adopt.</p>
+      <p>Users are tired of watching their favorite apps decay after every acquisition. The word "enshittification" exists because the pattern is so common it needed a name. People are ready for something different.</p>
+
+      <p>And for the first time, the infrastructure exists to deliver it. With L2 networks and stablecoins, you can run a global service without a bank, a payment processor, or anyone who can cut off your access.</p>
+
+      <p>The GPL kept code free but did not protect users. Signal and Wikipedia proved the model works but relied on non-profit structures that are hard to replicate. PublicWerx combines ethics, UX, and financial architecture into a single commitment any project can adopt.</p>
     </div>
   </section>
 

@@ -4,6 +4,7 @@
    ============================================ */
 
 :root {
+  /* Dark theme (default) */
   --blue: #4488ff;
   --blue-dim: rgba(68, 136, 255, 0.15);
   --bg: #0c0c0c;
@@ -14,9 +15,41 @@
   --text-muted: #888;
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.14);
+  --header-bg: rgba(12, 12, 12, 0.88);
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
   --max-width: 1120px;
+}
+
+/* Light theme tokens — used when the OS prefers light and the visitor has not
+   forced dark, OR when the visitor explicitly toggles to light. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --blue: #1f6feb;
+    --blue-dim: rgba(31, 111, 235, 0.12);
+    --bg: #ffffff;
+    --bg-raised: #f4f5f7;
+    --bg-card: #ffffff;
+    --text: #3a3a3c;
+    --text-bright: #0a0a0b;
+    --text-muted: #6b6b70;
+    --border: rgba(0, 0, 0, 0.10);
+    --border-strong: rgba(0, 0, 0, 0.16);
+    --header-bg: rgba(255, 255, 255, 0.85);
+  }
+}
+:root[data-theme="light"] {
+  --blue: #1f6feb;
+  --blue-dim: rgba(31, 111, 235, 0.12);
+  --bg: #ffffff;
+  --bg-raised: #f4f5f7;
+  --bg-card: #ffffff;
+  --text: #3a3a3c;
+  --text-bright: #0a0a0b;
+  --text-muted: #6b6b70;
+  --border: rgba(0, 0, 0, 0.10);
+  --border-strong: rgba(0, 0, 0, 0.16);
+  --header-bg: rgba(255, 255, 255, 0.85);
 }
 
 /* Reset */
@@ -38,6 +71,7 @@ body {
   line-height: 1.65;
   color: var(--text);
   background: var(--bg);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Container */
@@ -114,9 +148,10 @@ strong {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(12, 12, 12, 0.88);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .site-header .container {
@@ -156,6 +191,53 @@ nav a {
 nav a:hover {
   color: var(--text-bright);
   text-decoration: none;
+}
+
+/* ---- Header right group + theme toggle ---- */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+}
+
+.theme-toggle:hover {
+  color: var(--text-bright);
+  border-color: var(--border-strong);
+}
+
+.theme-toggle .icon { display: block; }
+/* Dark active -> show sun (click for light). Light active -> show moon. */
+.theme-toggle .icon-moon { display: none; }
+.theme-toggle .icon-sun { display: block; }
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .theme-toggle .icon-sun { display: none; }
+  :root:not([data-theme="dark"]) .theme-toggle .icon-moon { display: block; }
+}
+:root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+/* Smooth theme switch + subtle hover polish on themed surfaces. */
+.why-now, .constitution, .payments,
+.tenet, .project, .payment-item, .pillar, .site-footer {
+  transition: background-color 0.25s ease, border-color 0.2s ease, color 0.25s ease;
+}
+.project:hover, .payment-item:hover {
+  border-color: var(--blue);
 }
 
 /* ---- Hero ---- */
@@ -365,6 +447,18 @@ nav a:hover {
 .status-dev {
   background: var(--blue-dim);
   color: var(--blue);
+}
+
+/* Brighter dark-mode green is too light on a white card — darken for light. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .status-live {
+    background: rgba(22, 163, 74, 0.12);
+    color: #15803d;
+  }
+}
+:root[data-theme="light"] .status-live {
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
 }
 
 .project p {
