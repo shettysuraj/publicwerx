@@ -48,6 +48,7 @@ repo/
 │   │   ├── landing/              # Static site (tracked in git)
 │   │   │   ├── index.html
 │   │   │   ├── style.css
+│   │   │   ├── theme.js          # Light/dark toggle (external, CSP 'self')
 │   │   │   └── favicon.svg
 │   │   ├── lib/
 │   │   │   └── bug-report.v1.js  # Widget JS (tracked, served with CORP cross-origin)
@@ -90,6 +91,8 @@ repo/
 - **Dual-serve architecture.** Static landing page at `/` and React SPA at `/admin` from the same Express process. No collision because admin assets are prefixed and the SPA fallback only matches `/admin*`.
 - **Bug widget (Stripe.js pattern).** `bug-report.v1.js` is a standalone JS file served with CORP cross-origin. All portfolio apps load it via `<script src="https://publicwerx.org/lib/bug-report.v1.js" data-project="wordhop" defer></script>`. Filename is version-pinned; breaking changes ship as v2.js.
 - **Landing page lazy-loads widget.** The beetle button is inline HTML; the widget JS is only fetched on first click so the charter page has zero third-party network activity until the user acts.
+- **Landing theme toggle.** Light/dark via `landing/theme.js` — an *external* file because CSP is `script-src 'self'` (no inline JS, no inline handlers). Defaults to the visitor's OS (`prefers-color-scheme`); an explicit toggle is stored in `localStorage` and applied before first paint to avoid FOUC. Colors are CSS custom properties with light overrides under both `@media (prefers-color-scheme: light) :root:not([data-theme="dark"])` and `:root[data-theme="light"]`. Toggle button lives in `.header-right` (outside `nav`) so it survives the mobile `nav { display: none }`.
+- **Projects list is hand-curated, public-facing only.** The "Projects Under the Charter" cards are maintained by hand in `landing/index.html` — listing = a claim of charter adoption. Public-facing products only; infra (auth, peerlinq) and personal sites are excluded. Real domains come from nginx `server_name` / the fleet status monitor, never guessed.
 - **Admin auth via SSO.** APP_ID is `publicwerx-admin`. Boot flow: consumeSsoFragment -> tryRefresh -> auto-bounce once -> manual sign-in. Admin allowlist in requireAdmin.js.
 - **Deploy panel.** LOCAL_DEPLOY_COMMANDS for hub-box projects (surajshetty, gopbnj, aapta, publicwerx). Remote projects reached via HTTPS to their /api/system endpoints.
 - **Form config per project.** `bug_form_config` table with project-specific overrides (memewhatyasay: gameCode, gottapickone: roundId, aapta: no email fields). Cached in memory, invalidated on admin PUT.
