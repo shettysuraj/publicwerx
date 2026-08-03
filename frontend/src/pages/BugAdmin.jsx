@@ -14,6 +14,7 @@ import {
 import UsersTab from '../components/admin/UsersTab'
 import AppsTab from '../components/admin/AppsTab'
 import StatusTab from '../components/admin/StatusTab'
+import RequestsTab from '../components/admin/RequestsTab'
 
 const API = '/api/bugs'
 
@@ -214,7 +215,7 @@ export default function BugAdmin() {
         </div>
 
         <div className="flex gap-1 mb-4 bg-zinc-900 rounded-lg p-0.5 overflow-x-auto">
-          {[['status', 'Status'], ['deploy', 'Deploy'], ['backups', 'Backups'], ['users', 'Users'], ['apps', 'Apps'], ['reports', `Reports (${total})`]].map(([key, label]) => (
+          {[['status', 'Status'], ['deploy', 'Deploy'], ['backups', 'Backups'], ['requests', 'Requests'], ['users', 'Users'], ['apps', 'Apps'], ['reports', `Reports (${total})`]].map(([key, label]) => (
             <button key={key} onClick={() => setTab(key)}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition shrink-0 ${tab === key ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-zinc-200'}`}
             >{label}</button>
@@ -230,6 +231,7 @@ export default function BugAdmin() {
         {tab === 'backups' && system && <BackupsPanel system={system} />}
         {tab === 'backups' && !system && <div className="text-center py-12 text-zinc-500 text-sm">{systemLoading ? 'Loading...' : 'Failed to load'}</div>}
 
+        {tab === 'requests' && <RequestsTab />}
         {tab === 'users' && <UsersTab />}
         {tab === 'apps' && <AppsTab />}
 
