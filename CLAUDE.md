@@ -58,8 +58,9 @@ repo/
 ├── frontend/
 │   ├── src/
 │   │   ├── main.jsx              # Router with basename="/admin"
-│   │   ├── pages/BugAdmin.jsx    # 6-tab admin panel (status, deploy, backups, users, apps, reports)
+│   │   ├── pages/BugAdmin.jsx    # 7-tab admin panel (status, deploy, backups, requests, users, apps, reports)
 │   │   ├── components/admin/
+│   │   │   ├── RequestsTab.jsx   # Invite-only access-request review (approve/decline)
 │   │   │   ├── UsersTab.jsx      # Auth user management + subscription management (add/remove subs per user)
 │   │   │   └── AppsTab.jsx       # SSO app registry management
 │   │   └── lib/adminAuth.js      # SSO client (APP_ID: publicwerx-admin)
@@ -94,6 +95,9 @@ repo/
 - **Landing theme toggle.** Light/dark via `landing/theme.js` — an *external* file because CSP is `script-src 'self'` (no inline JS, no inline handlers). Defaults to the visitor's OS (`prefers-color-scheme`); an explicit toggle is stored in `localStorage` and applied before first paint to avoid FOUC. Colors are CSS custom properties with light overrides under both `@media (prefers-color-scheme: light) :root:not([data-theme="dark"])` and `:root[data-theme="light"]`. Toggle button lives in `.header-right` (outside `nav`) so it survives the mobile `nav { display: none }`.
 - **Projects list is hand-curated, public-facing only.** The "Projects Under the Charter" cards are maintained by hand in `landing/index.html` — listing = a claim of charter adoption. Public-facing products only; infra (auth, peerlinq) and personal sites are excluded. Real domains come from nginx `server_name` / the fleet status monitor, never guessed.
 - **Admin auth via SSO.** APP_ID is `publicwerx-admin`. Boot flow: consumeSsoFragment -> tryRefresh -> auto-bounce once -> manual sign-in. Admin allowlist in requireAdmin.js.
+- **Access request review (Requests tab).** Registration on auth.publicwerx.org is invite-only as of 2026.08.02: an unapproved stranger can only write one row to a queue there, and nothing is emailed to anyone until an operator approves *here*. The tab calls the auth service's `/admin/access-requests` endpoints with the Bearer token this panel already holds from SSO — no new auth. **Approve** mints a single-use invite and sends exactly one email; **Decline** sends nothing. Auth deliberately hosts no review UI of its own.
+  - The scripted-User-Agent marker is shown as a **hint for the reviewer's eyes, never a gate** — every known bot on the service sends a quoted UA and no real browser does, but it is a rented signal that decays the moment they change tooling.
+  - Approving an address that **already has an account** closes the request and sends nothing (there is nothing to approve). That refusal carries `closed: true` so the UI presents it as an outcome rather than a failure — and the list resyncs after *every* decision, success or not, because the server may have resolved a request behind what looks like an error.
 - **Deploy panel.** LOCAL_DEPLOY_COMMANDS for hub-box projects (surajshetty, gopbnj, aapta, publicwerx). Remote projects reached via HTTPS to their /api/system endpoints.
 - **Form config per project.** `bug_form_config` table with project-specific overrides (memewhatyasay: gameCode, gottapickone: roundId, aapta: no email fields). Cached in memory, invalidated on admin PUT.
 - **Rate limiting.** Global 200/min, API 60/min, bug submit 3/15min, form config 10/min.

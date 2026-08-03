@@ -27,9 +27,12 @@ export default function RequestsTab() {
   const [error, setError] = useState(null);
   const [note, setNote] = useState(null);
 
-  const load = useCallback(async () => {
+  // keepMessages: the post-decision resync must not wipe the note/error the
+  // decision just set — load() clearing them was why the outcome flashed and
+  // vanished.
+  const load = useCallback(async ({ keepMessages = false } = {}) => {
     setLoading(true);
-    setError(null);
+    if (!keepMessages) setError(null);
     try {
       const res = await authFetch(`${ADMIN}/access-requests?status=${encodeURIComponent(status)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -54,13 +57,26 @@ export default function RequestsTab() {
     try {
       const res = await authFetch(`${ADMIN}/access-requests/${id}/${action}`, { method: 'POST' });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`);
+
+      if (!res.ok) {
+        // Some refusals still RESOLVE the request server-side — approving an
+        // address that already has an account closes it, because there is
+        // nothing to approve. Those carry `closed`, and must read as an
+        // outcome rather than a failure, or the row appears to sit untouched
+        // while the server has already moved on.
+        if (body.closed) setNote(body.error);
+        else setError(body.error || `HTTP ${res.status}`);
+        return;
+      }
       setNote(action === 'approve' ? `Invite sent to ${email}.` : `Declined ${email}. Nothing was sent.`);
-      await load();
     } catch (e) {
       setError(e.message);
     } finally {
       setBusyId(null);
+      // Always resync with the server, success or not — the previous version
+      // only reloaded on success, so a closed-on-refusal request stayed
+      // visible as pending until a manual refresh.
+      await load({ keepMessages: true });
     }
   }
 
@@ -81,7 +97,7 @@ export default function RequestsTab() {
           </button>
         ))}
         <button
-          onClick={load}
+          onClick={() => load()}
           className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-xs hover:bg-zinc-700 transition ml-auto"
         >
           {loading ? 'Loading...' : 'Refresh'}
