@@ -108,3 +108,16 @@ repo/
 
 **Required for email:** `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`
 **Optional:** `PORT` (3016), `SMTP_PORT` (587), `SYSTEM_API_KEY`, `REMOTE_SYSTEM_KEY`, `AUTH_SERVICE_URL`, `DATA_DIR`
+
+### Pending: separate the deploy/restore key from the read key
+
+publicwerx-core 1.8.0 (deployed fleet-wide 2026.08.07) splits system-route
+privilege: `systemKey` gates reads, and an optional `writeKey` additionally gates
+`POST /deploy`, `POST /backups` and `POST /backups/restore`. **Nothing sets
+`writeKey` yet**, and it falls back to `systemKey` when unset — so today one
+secret still grants both "read fleet status" and "restore a backup over a live
+database". Those are not the same privilege.
+
+Adopting it means a per-box `SYSTEM_WRITE_KEY` plus this panel sending
+`x-system-write-key` alongside the existing `x-system-key` on those three calls.
+Until then the split exists in the library and is enforced nowhere.
