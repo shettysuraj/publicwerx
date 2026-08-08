@@ -442,8 +442,14 @@ async function remoteBackupCall(url, method, body, box) {
     opts.headers['Content-Type'] = 'application/json';
     opts.body = JSON.stringify(body);
   }
+  // 15 minutes, not 60s. A backup is a VACUUM INTO plus gzip plus an S3 upload
+  // of the whole database: peerlinq's 1.2GB takes ~134s measured. At 60s the
+  // panel aborted a backup that was still running and would succeed, reported
+  // failure, and invited a retry that stacked a second heavyweight job on the
+  // same box. GET/DELETE finish in milliseconds, so the longer ceiling only
+  // ever applies to something genuinely slow.
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60000);
+  const timeout = setTimeout(() => controller.abort(), 15 * 60 * 1000);
   opts.signal = controller.signal;
   try {
     const r = await fetch(url, opts);
