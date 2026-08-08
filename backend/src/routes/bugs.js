@@ -323,11 +323,36 @@ const REMOTE_PROJECTS = {
 };
 const REMOTE_SYSTEM_KEY = () => process.env.REMOTE_SYSTEM_KEY || '';
 
-async function remoteDeployProject(url) {
+// ── Execute privilege: per-box write keys ────────────────────────────────────
+// The read key is on every box because the monitor needs it, so it must not also
+// authorize deploy/restore. Write keys are scoped PER BOX — that is the real
+// trust boundary, so a key recovered from one box grants execute on that box
+// only, never the fleet.
+//
+// Sent ONLY when configured for that box. This matters: publicwerx-core's
+// requireWriteKey falls back to comparing x-system-write-key against the READ
+// key when the box has no writeKey set, so sending the header unconditionally
+// would 403 every deploy to a box that is not converted yet. Absent header =
+// previous behaviour, exactly.
+const BOX_WRITE_KEYS = () => ({
+  auth:  process.env.SYSTEM_WRITE_KEY_AUTH  || '',
+  hub:   process.env.SYSTEM_WRITE_KEY_HUB   || '',
+  tools: process.env.SYSTEM_WRITE_KEY_TOOLS || '',
+  game:  process.env.SYSTEM_WRITE_KEY_GAME  || '',
+});
+
+function systemHeaders(box) {
+  const h = { 'x-system-key': REMOTE_SYSTEM_KEY() };
+  const wk = box ? (BOX_WRITE_KEYS()[box] || '') : '';
+  if (wk) h['x-system-write-key'] = wk;
+  return h;
+}
+
+async function remoteDeployProject(url, box) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 300000);
   try {
-    const r = await fetch(`${url}/deploy`, { method: 'POST', headers: { 'x-system-key': REMOTE_SYSTEM_KEY() }, signal: controller.signal });
+    const r = await fetch(`${url}/deploy`, { method: 'POST', headers: systemHeaders(box), signal: controller.signal });
     return await r.json();
   } catch (err) { return { ok: false, output: err.message }; }
   finally { clearTimeout(timeout); }
@@ -361,7 +386,7 @@ router.post('/system/deploy/:name', requireBugAdmin, async (req, res) => {
 
   const remote = REMOTE_PROJECTS[name];
   if (remote) {
-    const result = await remoteDeployProject(remote.url);
+    const result = await remoteDeployProject(remote.url, remote.server);
     return res.json(result);
   }
 
@@ -411,8 +436,8 @@ router.post('/system/deploy/:name', requireBugAdmin, async (req, res) => {
 });
 
 // ── Backup/Restore proxy ────────────────────────────────────────────────────
-async function remoteBackupCall(url, method, body) {
-  const opts = { method, headers: { 'x-system-key': REMOTE_SYSTEM_KEY() } };
+async function remoteBackupCall(url, method, body, box) {
+  const opts = { method, headers: systemHeaders(box) };
   if (body) {
     opts.headers['Content-Type'] = 'application/json';
     opts.body = JSON.stringify(body);
@@ -430,14 +455,14 @@ async function remoteBackupCall(url, method, body) {
 router.get('/system/backups/:name', requireBugAdmin, async (req, res) => {
   const remote = REMOTE_PROJECTS[req.params.name];
   if (!remote) return res.status(400).json({ error: 'Unknown project' });
-  const { status, data } = await remoteBackupCall(`${remote.url}/backups`, 'GET');
+  const { status, data } = await remoteBackupCall(`${remote.url}/backups`, 'GET', null, remote.server);
   res.status(status).json(data);
 });
 
 router.post('/system/backups/:name', requireBugAdmin, async (req, res) => {
   const remote = REMOTE_PROJECTS[req.params.name];
   if (!remote) return res.status(400).json({ error: 'Unknown project' });
-  const { status, data } = await remoteBackupCall(`${remote.url}/backups`, 'POST');
+  const { status, data } = await remoteBackupCall(`${remote.url}/backups`, 'POST', null, remote.server);
   res.status(status).json(data);
 });
 
@@ -448,7 +473,7 @@ router.post('/system/backups/:name/restore', requireBugAdmin, async (req, res) =
   if (!remote) return res.status(400).json({ error: 'Unknown project' });
   const { filename } = req.body;
   if (!filename || !SAFE_BACKUP_FILENAME.test(filename)) return res.status(400).json({ error: 'Invalid filename' });
-  const { status, data } = await remoteBackupCall(`${remote.url}/backups/restore`, 'POST', { filename });
+  const { status, data } = await remoteBackupCall(`${remote.url}/backups/restore`, 'POST', { filename }, remote.server);
   res.status(status).json(data);
 });
 
@@ -456,7 +481,7 @@ router.delete('/system/backups/:name/:filename', requireBugAdmin, async (req, re
   const remote = REMOTE_PROJECTS[req.params.name];
   if (!remote) return res.status(400).json({ error: 'Unknown project' });
   if (!SAFE_BACKUP_FILENAME.test(req.params.filename)) return res.status(400).json({ error: 'Invalid filename' });
-  const { status, data } = await remoteBackupCall(`${remote.url}/backups/${encodeURIComponent(req.params.filename)}`, 'DELETE');
+  const { status, data } = await remoteBackupCall(`${remote.url}/backups/${encodeURIComponent(req.params.filename)}`, 'DELETE', null, remote.server);
   res.status(status).json(data);
 });
 
